@@ -1,39 +1,187 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Socket.IO chat</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #messages { margin-bottom: 40px }
-    </style>
-  </head>
-  <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-      $(function () {
-        var socket = io();
-        $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
+
+<head>
+  <title>chat app</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.8/css/mdb.min.css" rel="stylesheet">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.8/js/mdb.min.js"></script>
+</head>
+<style>
+  #messageBody {
+        height: 500px;
+        background: white;
+    }
+
+    #chatsOnline {
+        height: 500px;
+        background: white;
+    }
+
+    #header {
+        height: 30px;
+        background: #63f2b2;
+    }
+
+    #nicknameHeader,
+    #friends {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-top: 5px;
+        padding: 10px;
+        height: 40px;
+        background: #63f2b2;
+    }
+
+    #friendsGroup {
+        margin-left: -25px;
+    }
+
+    #messageGroup {
+        margin-left: 20px;
+    }
+
+    .divBorder {
+        border-right: 1px solid black;
+        border-left: 1px solid black;
+
+    }
+
+    .card {
+        width: 20%;
+        margin-top: 7%;
+    }
+
+    #chatIcon {
+        font-size: 100px;
+    }
+
+    p {
+        text-align: left;
+        color: black;
+    }
+
+    .md-form {
+        margin-top: -5px;
+        margin-bottom: 50px;
+    }
+
+    .view {
+        padding-top: 50px;
+        height: 200px;
+        background: #1fcc2a;
+        margin-bottom: 20px;
+    }
+
+    #logIn {
+        width: 90%;
+    }
+
+    ::-webkit-input-placeholder {
+        font-style: italic;
+    }
+
+    :-moz-placeholder {
+        font-style: italic;
+    }
+
+    ::-moz-placeholder {
+        font-style: italic;
+    }
+
+    :-ms-input-placeholder {
+        font-style: italic;
+    }
+
+    input {
+        text-align: center;
+    }
+    
+</style>
+
+<body>
+  <div id="header" class="col-md-12">
+
+  </div>
+  <center>
+    <div id="register" class="card card-cascade narrower">
+      <div class="view view-cascade overlay">
+        <i id="chatIcon" class="fas fa-comments"></i>
+      </div>
+      <div class="card-body card-body-cascade">
+        <p>Enter your nick name:</p>
+        <div class="md-form">
+          <input type="text" id="nickname" class="form-control" placeholder="nickname">
+        </div>
+        <button id="logIn" class="btn btn-success">Log In</button>
+      </div>
+    </div>
+  </center>
+  <div class="container">
+    <div class="row">
+      <div id="messageGroup" class="col-md-8">
+        <div id="nicknameHeader" class="col-md-12">
+          <h6>nickname</h6>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div id="messageBody" class="divBorder col-md-12 overflow-auto">
+
+            </div>
+            <div class="input-group mb-3">
+              <input id="message" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username"
+                aria-describedby="button-addon2">
+              <div class="input-group-append">
+                <button id="send" class="btn btn-md btn-outline-default m-0 px-3 py-2 z-depth-0 waves-effect" type="button"
+                  id="button-addon2">send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="friendsGroup" class="col-md-4">
+        <div class="col-md-12">
+          <div id="friends" class="col-md-12">
+            <h6>friends</h6>
+          </div>
+          <div id="chatsOnline" class="divBorder col-md-12">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="/client.js"></script>
+  <!-- <script>
+        $(function () {
+            var socket = io();
+            socket.emit('friend', 'user');
+            $('#send').on('click',function () {
+                console.log('testmessage');
+                socket.emit('chat message', {message : $('#message').val(), user : 'user'});
+                $('#message').val('');
+                return false;
+            });
+
+            socket.on('message', function (msg) {
+                console.log(msg);
+                $('#messageBody').append($('<li>').text(msg.message));
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+
+            socket.on('online', function(fr){
+                $('#chatsOnline').append($('<li>').text(fr));
+                console.log('User test')
+                window.scrollTo(0, document.body.scrollHeight);
+            })
         });
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      });
-    </script>
-  </body>
+    </script> -->
+</body>
+
 </html>
