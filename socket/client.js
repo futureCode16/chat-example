@@ -1,4 +1,5 @@
 $(document).ready(function () {
+  //Bargaso, Renan Code
   var nickname = $('#nickname');
   $('#logIn').on('click', function () {
 
@@ -8,6 +9,7 @@ $(document).ready(function () {
 
     $('#register').hide();
     $(".container").show();
+    $('#header').show();
 
     var userNickname = nickname.val();
 
@@ -60,19 +62,33 @@ $(document).ready(function () {
         if (fr[i] != userNickname && !users.includes(fr[i])) {
           users.push(fr[i]);
           $('<div/>', {
-            class: 'test',
+            class:'privateMsg',
             id: fr[i]
-          }).css({ "font-style": "italic" }).html(fr[i]).appendTo('#chatsOnline');
-          $('#messageBody').append($('<p>').css({'textAlign':'center'}).html(fr[i]+' has join the group'))
+          }).css({'background':'#ccebfc','paddingLeft':'5px','marginBottom':'2px',
+                }).append('<p>').css({'color':'green','fontWeight':'bold','fontSize':'20px'
+                }).html('•&nbsp;&nbsp;')
+                .append($('<label>').css({'color':'black','fontSize':'17px'}).html(fr[i]))
+                .appendTo('#chatsOnline');
+          $('#'+fr[i]).on('mouseover',function(){
+            $(this).css({'background':'#6dc6f7'});
+          });
+          $('#'+fr[i]).on('mouseout',function(){
+            $(this).css({'background':'#ccebfc'});
+          });
+
+          $('#messageBody').append($('<p>').css({ 'textAlign': 'center','fontSize':'12px'}).html(fr[i] + ' has join the group'))
         }
       }
       window.scrollTo(0, document.body.scrollHeight);
     })
 
-    $('#send').on('click', function () {
-      socket.emit("chat message", { 'message': $('#message').val(), 'sender': userNickname });
-      $('#message').val('');
-      return false;
+    //on enter send
+    $('#message').keypress(function (event) {
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if (keycode == '13') {
+        socket.emit("chat message", { 'message': $('#message').val(), 'sender': userNickname });
+        $('#message').val('');
+      }
     });
 
   });

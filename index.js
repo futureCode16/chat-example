@@ -8,7 +8,7 @@ var users = [];
 var count= 0; //message count
 
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/index1.html');
 });
 
 app.use(express.static('socket'));

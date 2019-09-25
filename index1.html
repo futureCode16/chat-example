@@ -1,7 +1,238 @@
 <!doctype html>
 <html>
-  <head>
-  </head>
-  <body>
-  </body>
+
+<head>
+  <title>Chat App</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+</head>
+<style>
+  body {
+    margin: 0;
+    font-family: sans-serif;
+  }
+
+  #header {
+    background: #034a63;
+    height: 70px;
+    padding-top: 10px;
+    display: none;
+  }
+
+  h3 {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: bold;
+    color: white;
+    margin-top: 5px;
+    margin-left: 10px;
+  }
+
+  h4 {
+    color: white;
+    text-shadow: 0px 0px 2px black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  #logo {
+    height: 50px;
+    width: auto;
+    float: left;
+  }
+
+  .container {
+    padding: 50px;
+    display: none;
+  }
+
+  .heads {
+    border-bottom: 2px solid #034a63;
+    background: #097491;
+    height: 70px;
+    padding: 20px;
+    border-top-left-radius: 20px;
+  }
+
+  #message,
+  #privatemessage {
+    height: 40px;
+    width: 100%;
+    border: none;
+    box-shadow: 0xp 0px 2px black;
+    border-bottom: 2px solid black;
+    padding-left: 7px;
+  }
+
+  .pads {
+    box-shadow: 0px 0px 3px black;
+    height: 400px;
+    border-top-left-radius: 20px;
+  }
+
+  #onlines {
+    height: 440px;
+  }
+
+  .divGaps {
+    margin-top: 5px;
+  }
+
+  #groupmessages {
+    padding: 0px;
+  }
+
+  #register {
+    margin-top: 9%;
+    width: 18rem;
+    background: white;
+    height: 400px;
+    box-shadow: 0px 0px 3px black;
+  }
+
+  #chatIcon {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    font-size: 80px;
+    color: white;
+    background: #097491;
+  }
+
+  #logIn {
+    width: 150px;
+    margin-top: 30px;
+  }
+
+  #nickname {
+    margin-top: 20px;
+  }
+
+  #chatsOnline {
+    padding: 5px;
+    overflow-y: scroll;
+    height: 370px;
+  }
+
+  #messageBody {
+    height: 330px;
+    overflow-y: scroll;
+  }
+
+  #privateMessageBody {
+    height: 330px;
+    overflow-y: scroll;
+  }
+
+  #credits {
+    color: gray;
+    font-size: 8px;
+  }
+</style>
+
+<body>
+  <center>
+    <div id="register" class="card">
+      <i id="chatIcon" class="fas fa-comments"></i>
+      <div class="card-body">
+        <hr>
+        <p><b>Enter your nickname:</b></p>
+        <hr>
+        <input type="text" id="nickname" class="form-control" placeholder="nickname" />
+        <button id="logIn" class="btn btn-success">Log In</button>
+      </div>
+    </div>
+  </center>
+  <div id="header" class="col-md-12">
+    <img id="logo" src="support.png" /><label>
+      <h3>Chat Socket</h3>
+    </label>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="divGaps col-md-3">
+        <div class="col-md-12">
+          <div id="onlines" class="pads row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="heads col-md-12">
+                  <h4>Connected users</h4>
+                </div>
+              </div>
+              <div class="row">
+                <div id="chatsOnline" class="col-md-12">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="divGaps col-md-5">
+        <div class="col-md-12">
+          <div id="groupmessages" class="pads row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="heads col-md-12">
+                  <h4>Group messages</h4>
+                </div>
+              </div>
+              <div class="row">
+                <div id="messageBody" class="col-md-12">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input id="message" type="text" placeholder="type your message..." aria-label="messages" />
+      </div>
+      <div class="divGaps col-md-4">
+        <div class="col-md-12">
+          <div class="pads row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="heads col-md-12">
+                  <h4 id="pMessage">Private messages</h4>
+                </div>
+              </div>
+              <div class="row">
+                <div id="privateMessageBody" class="col-md-12">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input id="privatemessage" type="text" placeholder="type your message..." aria-label="messages" />
+      </div>
+    </div>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <div>
+      <center>
+        <i id='credits'>
+          Icons made by
+          <a href="https://www.flaticon.com/<?=_('authors').'/'?>freepik" title="Freepik">Freepik</a>
+          from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+          <p>Renan C. Bargaso</p>
+        </i>
+      </center>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="/client.js"></script>
+</body>
+
 </html>
