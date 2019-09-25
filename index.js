@@ -5,6 +5,7 @@ var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
 var users = [];
+var count= 0; //message count
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -19,8 +20,13 @@ io.on('connection', function(socket){
     io.emit('online', users);
   })
 
+  socket.on('typing', function(status){
+    socket.broadcast.emit('typing status',status);
+  });
+
   socket.on("chat message", function(msg){
-    io.emit(msg.user, msg);
+    msg["count"] = ++count;
+    io.emit('message', msg);
   });
 
 });
