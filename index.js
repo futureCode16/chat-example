@@ -30,7 +30,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('private message', function(msg){
-    io.emit(msg.sender, msg);
+    io.emit(msg.receiver, msg);
   })
 
 });

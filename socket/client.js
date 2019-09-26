@@ -7,6 +7,8 @@ $(document).ready(function () {
     var users = [];
     var typingStatus = 0;
     var messageRecipient = "";
+    var blink = null;
+    var messages = {};
 
     $('#register').hide();
     $(".container").show();
@@ -91,25 +93,39 @@ $(document).ready(function () {
     })
 
     socket.on(userNickname, function (msg) {
-      if ( msg.message !== "") {
+      if (msg.message !== "") {
         $('#inboxBody').append($('<div>').css({
-          "width": "100%", "white-space": "initial","textOverflow": "ellipsis",
-           "wordWrap": "break-word", "overflow": "hidden"
+          "width": "100%", "white-space": "initial", "textOverflow": "ellipsis", 'marginBottom': '2px',
+          "wordWrap": "break-word", "overflow": "hidden", 'background': '#d2f3fa',
         }).attr("id", 'pinbox' + messageRecipient))
-        if(msg.message.length <= 40){
-          var pmessage = msg.message.substring(0,39);
-          $('#pinbox' + messageRecipient).append($('<p>').css({"padding": "5px",'fontWeight':'bold'
-          }).html(msg.sender + ' : ')); 
-          $('#pinbox' + messageRecipient).append($('<p>').css({"padding": "5px",'paddingLeft':'50px','marginTop':'-10px'
+
+        blink = setInterval(function () {
+          $('#inbox').fadeOut('slow', function () {
+            $('#inbox').css({ 'boxShadow': '0px 0px 10px red' })
+            $(this).fadeIn('slow', function () {
+              $('#inbox').css({ 'boxShadow': '0px 0px 5px black' });
+            });
+          });
+        }, 1000);
+
+        if (msg.message.length <= 40) {
+          var pmessage = msg.message.substring(0, 39);
+          $('#pinbox' + messageRecipient).append($('<p>').css({
+            'fontWeight': 'bold', 'paddingLeft': '5px'
+          }).html(msg.sender + ' : '));
+          $('#pinbox' + messageRecipient).append($('<p>').css({
+            'paddingLeft': '50px', 'marginTop': '-20px', 'fontSize': '15px'
           }).html(pmessage));
-        }else{
-          var pmessage = msg.message.substring(0,39)+'...';
-          $('#pinbox' + messageRecipient).append($('<p>').css({"padding": "5px",'fontWeight':'bold',
-          }).html(msg.sender + ' : ')); 
-          $('#pinbox' + messageRecipient).append($('<p>').css({"padding": "5px",'paddingLeft':'50px','marginTop':'-10px'
+        } else {
+          var pmessage = msg.message.substring(0, 39) + '...';
+          $('#pinbox' + messageRecipient).append($('<p>').css({
+            'fontWeight': 'bold', 'paddingLeft': '5px'
+          }).html(msg.sender + ' : '));
+          $('#pinbox' + messageRecipient).append($('<p>').css({
+            'paddingLeft': '50px', 'marginTop': '-20px', 'fontSize': '15px'
           }).html(pmessage));
         }
-      } 
+      }
     });
 
     //on enter send
@@ -124,9 +140,13 @@ $(document).ready(function () {
     $('#privatemessage').keypress(function (event) {
       var keycode = (event.keyCode ? event.keyCode : event.which);
       if (keycode == '13') {
-        socket.emit("private message", { 'message': $('#privatemessage').val(), 'sender': messageRecipient });
+        socket.emit("private message", { 'message': $('#privatemessage').val(), 'sender': userNickname, 'receiver': messageRecipient });
         $('#privatemessage').val('');
       }
+    });
+
+    $('#inbox').on('click', function () {
+      clearInterval(blink);
     });
 
   });
