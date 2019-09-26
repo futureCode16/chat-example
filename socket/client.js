@@ -6,6 +6,7 @@ $(document).ready(function () {
     var socket = io();
     var users = [];
     var typingStatus = 0;
+    var messageRecipient = "";
 
     $('#register').hide();
     $(".container").show();
@@ -62,25 +63,54 @@ $(document).ready(function () {
         if (fr[i] != userNickname && !users.includes(fr[i])) {
           users.push(fr[i]);
           $('<div/>', {
-            class:'privateMsg',
+            class: 'privateMsg',
             id: fr[i]
-          }).css({'background':'#ccebfc','paddingLeft':'5px','marginBottom':'2px',
-                }).append('<p>').css({'color':'green','fontWeight':'bold','fontSize':'20px'
-                }).html('•&nbsp;&nbsp;')
-                .append($('<label>').css({'color':'black','fontSize':'17px'}).html(fr[i]))
-                .appendTo('#chatsOnline');
-          $('#'+fr[i]).on('mouseover',function(){
-            $(this).css({'background':'#6dc6f7'});
+          }).css({
+            'background': '#ccebfc', 'paddingLeft': '5px', 'marginBottom': '2px',
+          }).append('<p>').css({
+            'color': 'green', 'fontWeight': 'bold', 'fontSize': '20px'
+          }).html('•&nbsp;&nbsp;')
+            .append($('<label>').css({ 'color': 'black', 'fontSize': '17px' }).html(fr[i]))
+            .appendTo('#chatsOnline');
+          $('#' + fr[i]).on('mouseover', function () {
+            $(this).css({ 'background': '#6dc6f7', 'cursor': 'pointer' });
           });
-          $('#'+fr[i]).on('mouseout',function(){
-            $(this).css({'background':'#ccebfc'});
+          $('#' + fr[i]).on('mouseout', function () {
+            $(this).css({ 'background': '#ccebfc' });
           });
 
-          $('#messageBody').append($('<p>').css({ 'textAlign': 'center','fontSize':'12px'}).html(fr[i] + ' has join the group'))
+          $('#' + fr[i]).on('click', function () {
+            messageRecipient = $(this)[0].id;
+            console.log(messageRecipient);
+          });
+
+          $('#messageBody').append($('<p>').css({ 'textAlign': 'center', 'fontSize': '12px' }).html(fr[i] + ' has join the group'))
         }
       }
       window.scrollTo(0, document.body.scrollHeight);
     })
+
+    socket.on(userNickname, function (msg) {
+      if ( msg.message !== "") {
+        $('#inboxBody').append($('<div>').css({
+          "width": "100%", "white-space": "initial","textOverflow": "ellipsis",
+           "wordWrap": "break-word", "overflow": "hidden"
+        }).attr("id", 'pinbox' + messageRecipient))
+        if(msg.message.length <= 40){
+          var pmessage = msg.message.substring(0,39);
+          $('#pinbox' + messageRecipient).append($('<p>').css({"padding": "5px",'fontWeight':'bold'
+          }).html(msg.sender + ' : ')); 
+          $('#pinbox' + messageRecipient).append($('<p>').css({"padding": "5px",'paddingLeft':'50px','marginTop':'-10px'
+          }).html(pmessage));
+        }else{
+          var pmessage = msg.message.substring(0,39)+'...';
+          $('#pinbox' + messageRecipient).append($('<p>').css({"padding": "5px",'fontWeight':'bold',
+          }).html(msg.sender + ' : ')); 
+          $('#pinbox' + messageRecipient).append($('<p>').css({"padding": "5px",'paddingLeft':'50px','marginTop':'-10px'
+          }).html(pmessage));
+        }
+      } 
+    });
 
     //on enter send
     $('#message').keypress(function (event) {
@@ -88,6 +118,14 @@ $(document).ready(function () {
       if (keycode == '13') {
         socket.emit("chat message", { 'message': $('#message').val(), 'sender': userNickname });
         $('#message').val('');
+      }
+    });
+
+    $('#privatemessage').keypress(function (event) {
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if (keycode == '13') {
+        socket.emit("private message", { 'message': $('#privatemessage').val(), 'sender': messageRecipient });
+        $('#privatemessage').val('');
       }
     });
 

@@ -29,6 +29,10 @@ io.on('connection', function(socket){
     io.emit('message', msg);
   });
 
+  socket.on('private message', function(msg){
+    io.emit(msg.sender, msg);
+  })
+
 });
 
 http.listen(port, function(){

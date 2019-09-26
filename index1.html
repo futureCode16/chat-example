@@ -135,6 +135,20 @@
     color: gray;
     font-size: 8px;
   }
+  #inbox{
+    font-size: 24px;
+    cursor:pointer;
+    padding:7px;
+    background:#edebe6;
+    border-radius: 50%;
+    color:black;
+    text-shadow: none;
+    box-shadow: 0px 0px 5px black;
+  }
+  #inboxBody{
+    overflow-y: scroll;
+    height:350px;
+  }
 </style>
 
 <body>
@@ -200,7 +214,9 @@
             <div class="col-md-12">
               <div class="row">
                 <div class="heads col-md-12">
-                  <h4 id="pMessage">Private messages</h4>
+                  <h4 id="pMessage">Private messages &nbsp;&nbsp;
+                    <i id="inbox" class="far fa-envelope" data-toggle="modal" data-target="#exampleModalCenter"></i>
+                  </h4>
                 </div>
               </div>
               <div class="row">
@@ -229,7 +245,23 @@
       </center>
     </div>
   </div>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">messages</h5>
+        </div>
+        <div id="inboxBody" class="modal-body">
 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script src="/client.js"></script>
