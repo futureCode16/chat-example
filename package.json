@@ -8,5 +8,20 @@
   },
   "scripts": {
     "start": "node index.js"
+  },
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futureCode16/chat-example.git"
+  },
+  "author": "Bargaso",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/futureCode16/chat-example/issues"
+  },
+  "homepage": "https://github.com/futureCode16/chat-example#readme",
+  "engines": {
+    "node": "v10.16.3"
   }
 }

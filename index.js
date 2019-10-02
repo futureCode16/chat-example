@@ -35,6 +35,6 @@ io.on('connection', function(socket){
 
 });
 
-http.listen(port, function(){
+http.listen(port, '0.0.0.0',function(){
   console.log('listening on *:' + port);
 });
